@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import userModels from '../../models/userModels.js'
+import transporter from '../nodemailer.js';
 
 export const register = async (req, res) =>{
 
@@ -93,3 +94,69 @@ export const logout = async (req, res) => {
     }
 }
 
+export const sendVerifyOtp = async (req, res) =>{
+    try{
+        const {userId} = req.body;
+
+        const user = await userModels.findById(userId);
+
+        if(user.isAccountVerified){
+            return res.json({success: false, message: "Account is Already verified"});
+        }
+
+        const otp = String(Math.floor( 100000 + Math.random() * 900000));   
+
+        user.verifyOTP = otp;
+        user.verifyOTPExpireAt = Date.now() + 24 * 60 * 60 * 1000
+
+        await user.save();
+
+        const mailOption = {
+            from: process.env.SENDER_EMAIL,
+            to: user.email,
+            subject: "Account Verification OTP",
+            text: `Your otp ${otp} verify your account using this OTP.`
+        }
+        await transporter.sendMail(mailOption);
+
+        res.json({success: true, message: 'Verification OTP sent on Email'});
+    }
+    catch(error){
+        res.json({success: false, message: error.message});
+    }
+}
+
+export const verifyEmail = async (req, res) =>{
+    const {userId, otp} = req.body;
+
+    if(!userId || !otp){
+        res.json({success: false, message: 'Missing Details'});
+    }
+
+    try{
+        const user = await userModels.findById(userId);
+
+        if(!user){
+            res.json({success: false, message: 'User not found'});
+        }
+
+        if(user.verifyOTP === '' || user.verifyOTP !== otp){
+            res.json({success: false, message: 'Invalid OTP'});
+        }
+
+        if(user.verifyOTPExpireAt < Date.now()){
+            res.json({success: false, message: 'OTP Expired'});   
+        }
+
+        user.isAccountVerified = true;
+        user.verifyOTP = '';
+        user.verifyOTPExpireAt;
+
+        await user.save();
+        
+        return res.json({success: true, message: 'Email Verified Successfully'});
+    }
+    catch(error){
+        res.json({success: false, message: error.message})
+    }
+}

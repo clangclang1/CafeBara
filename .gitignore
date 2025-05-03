@@ -1,8 +1,4 @@
 node_modules/
 package-lock.json
-<<<<<<< Updated upstream
 package.json
-=======
 .env
-package.json    
->>>>>>> Stashed changes

@@ -4,6 +4,7 @@ import express from "express";
 import 'dotenv/config';
 import connectDB from "../back-end/config/db.js";
 import authRouter from "./routes/authRoutes.js";
+import userRouter from "./routes/userRoutes.js";
 
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(cors({credentials: true}));
 //API ENDPOINTS
 app.get('/', (req, res) => res.send('SERVER WORKING'));
 app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
 
 app.listen(port, ()=>{
     connectDB();
