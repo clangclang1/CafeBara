@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import userModels from '../models/userModels.js'
+import userModels from '../../models/userModels.js'
 
 export const register = async (req, res) =>{
 
@@ -86,15 +86,6 @@ export const logout = async (req, res) => {
         })
 
         return res.json({success: false, message: 'Logged Out'})
-
-    }
-    catch(error){
-        res.json({success: false, message: error.message});
-    }
-}
-
-export const sendVerifyOtp = async (req, res) =>{
-    try{
 
     }
     catch(error){
