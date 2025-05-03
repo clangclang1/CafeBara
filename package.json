@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cafebara": "file:",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "install": "^0.13.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.2",
+    "nodemailer": "^6.10.1",
+    "nodemon": "^3.1.9"
+  },
+  "name": "cafebara",
+  "version": "1.0.0",
+  "main": "back-end/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node back-end/app.js",
+    "dev": "nodemon back-end/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
