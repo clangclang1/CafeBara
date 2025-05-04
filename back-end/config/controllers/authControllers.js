@@ -137,15 +137,15 @@ export const verifyEmail = async (req, res) =>{
         const user = await userModels.findById(userId);
 
         if(!user){
-            res.json({success: false, message: 'User not found'});
+           return res.json({success: false, message: 'User not found'});
         }
 
         if(user.verifyOTP === '' || user.verifyOTP !== otp){
-            res.json({success: false, message: 'Invalid OTP'});
+            return res.json({success: false, message: 'Invalid OTP'});
         }
 
         if(user.verifyOTPExpireAt < Date.now()){
-            res.json({success: false, message: 'OTP Expired'});   
+            return res.json({success: false, message: 'OTP Expired'});   
         }
 
         user.isAccountVerified = true;
@@ -160,3 +160,34 @@ export const verifyEmail = async (req, res) =>{
         res.json({success: false, message: error.message})
     }
 }
+
+export const isAuthenticated = async (req, res) => {
+    const { userId } = req.body; // Or however you're getting the user's identity
+
+    if (!userId) {
+        return res.status(400).json({ success: false, message: 'Missing user ID' }); 
+    }
+
+    try {
+        const user = await userModels.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        //  *Important:* Check the appropriate field for authentication status
+        if (!user.isAccountVerified) { 
+            return res.status(401).json({ success: false, message: 'Account not verified' });
+        }
+
+        //  *Optional:* You might also want to check for things like:
+        //  -  Account being active/enabled
+        //  -  Session validity
+        //  -  Token expiration
+
+        return res.json({ success: true, message: 'Account is authenticated' });
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message }); //  Important:  Handle errors!
+    }
+};
