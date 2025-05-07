@@ -21,5 +21,5 @@ app.use('/api/user', userRouter);
 
 app.listen(port, ()=>{
     connectDB();
-    console.log("CLARECE STARTING TO CODE @5000");
+    console.log("CLARENCE STARTING TO CODE @5000");
 })
